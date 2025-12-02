@@ -261,6 +261,11 @@ class ZIGenerator(Star):
 
     @llm_tool("zigen_generate_image")
     async def generate_image_tool(self, event: AstrMessageEvent, prompt: str):
-        """供 LLM 调用的图像生成工具"""
+        """Generate images using Z-Image based on the given prompt.
+        Call only when the user intent is to generate/draw/create an image, not for searching.
+
+        Args:
+            prompt (string): The prompt or description used for generating images.
+        """
         async for result in self.generate_image(event, prompt):
             yield result

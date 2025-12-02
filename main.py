@@ -46,23 +46,20 @@ class ZIGenerator(Star):
         return prompt.replace(REPLACE_SPACE, " ")
 
     @staticmethod
-    def _extract_prompt_from_message(event: AstrMessageEvent, prompt: str) -> str:
+    def _extract_prompt_from_message(event: AstrMessageEvent) -> str:
         """从原始消息文本还原带空格的提示词"""
         full = (event.message_str or "").strip()
-        base = prompt.strip()
-
         if not full:
-            return base
+            return ""
+
+        # 去掉命令前缀与子命令
         tokens = full.split()
         if tokens and tokens[0].lstrip("/") in ("zi",):
             tokens = tokens[1:]
         if tokens and tokens[0] == "gen":
             tokens = tokens[1:]
 
-        fallback = " ".join(tokens).strip()
-        if fallback:
-            return fallback
-        return base
+        return " ".join(tokens).strip()
 
     def _build_payload(self, prompt: str) -> dict[str, Any]:
         """构造发送到 ZIGen 接口的 payload"""
@@ -159,7 +156,10 @@ class ZIGenerator(Star):
         """生成图片"""
         async with self.task_semaphore:
             try:
-                prompt = self._extract_prompt_from_message(event, prompt)
+                prompt = self._extract_prompt_from_message(event)
+                if not prompt:
+                    yield event.plain_result("⚠️ 需要提供提示词")
+                    return
                 if self.config.get("verbose", True):
                     yield event.plain_result("🎨 正在调用 ZIGen 服务，请稍候...")
 

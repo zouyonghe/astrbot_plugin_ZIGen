@@ -1,0 +1,85 @@
+{
+    "service_url": {
+        "type": "string",
+        "description": "ZIGen 服务地址",
+        "default": "http://127.0.0.1:9000/generate",
+        "hint": "填写完整 HTTP(s) 地址，建议指向 /generate 端点"
+    },
+
+    "verbose": {
+        "type": "bool",
+        "description": "控制回复的详略程度",
+        "default": true,
+        "hint": "开启时会在生成阶段提示进度"
+    },
+
+    "timeout": {
+        "type": "int",
+        "description": "请求超时时间（秒）",
+        "default": 120,
+        "min": 5,
+        "max": 1800
+    },
+
+    "max_concurrent_tasks": {
+        "type": "int",
+        "description": "最大并发任务数",
+        "default": 5,
+        "min": 1,
+        "max": 50
+    },
+
+    "default_params": {
+        "type": "object",
+        "description": "默认生成参数",
+        "items": {
+            "width": {
+                "type": "int",
+                "description": "图像宽度",
+                "default": 512,
+                "min": 1,
+                "max": 2048
+            },
+            "height": {
+                "type": "int",
+                "description": "图像高度",
+                "default": 512,
+                "min": 1,
+                "max": 2048
+            },
+            "steps": {
+                "type": "int",
+                "description": "采样步数",
+                "default": 9,
+                "min": 1,
+                "max": 200
+            },
+            "guidance": {
+                "type": "float",
+                "description": "guidance 数值",
+                "default": 0,
+                "min": 0,
+                "max": 50
+            },
+            "seed": {
+                "type": "int",
+                "description": "随机种子，-1 表示随机",
+                "default": -1,
+                "min": -1
+            },
+            "negative_prompt": {
+                "type": "string",
+                "description": "默认负面提示词",
+                "default": "blurry, low quality",
+                "hint": "为空时不传递负面提示词"
+            }
+        }
+    },
+
+    "replace_space": {
+        "type": "string",
+        "description": "用于替代提示词中空格的字符",
+        "default": "~",
+        "hint": "如命令参数无法直接包含空格，可先用该字符替代"
+    }
+}

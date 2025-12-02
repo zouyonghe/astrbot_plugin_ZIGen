@@ -48,13 +48,11 @@ class ZIGenerator(Star):
     @staticmethod
     def _extract_prompt_from_message(event: AstrMessageEvent, prompt: str) -> str:
         """从原始消息文本还原带空格的提示词"""
-        if prompt and prompt.strip():
-            return prompt
-
         full = (event.message_str or "").strip()
-        if not full:
-            return prompt
+        base = prompt.strip()
 
+        if not full:
+            return base
         tokens = full.split()
         if tokens and tokens[0].lstrip("/") in ("zi",):
             tokens = tokens[1:]
@@ -62,7 +60,9 @@ class ZIGenerator(Star):
             tokens = tokens[1:]
 
         fallback = " ".join(tokens).strip()
-        return fallback or prompt
+        if fallback:
+            return fallback
+        return base
 
     def _build_payload(self, prompt: str) -> dict[str, Any]:
         """构造发送到 ZIGen 接口的 payload"""

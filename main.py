@@ -9,6 +9,7 @@ from astrbot.api.all import *
 
 
 TEMP_PATH = os.path.abspath("data/temp")
+REPLACE_SPACE = "~"
 
 
 @register("ZIGen", "buding(AstrBot)", "调用自定义生成接口返回图片", "1.0.0")
@@ -42,8 +43,7 @@ class ZIGenerator(Star):
 
     def _trans_prompt(self, prompt: str) -> str:
         """将用于替代空格的字符还原为空格"""
-        replace_space = self.config.get("replace_space", "~")
-        return prompt.replace(replace_space, " ")
+        return prompt.replace(REPLACE_SPACE, " ")
 
     @staticmethod
     def _extract_prompt_from_message(event: AstrMessageEvent, prompt: str) -> str:

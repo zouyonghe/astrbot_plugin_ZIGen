@@ -23,7 +23,7 @@ python webui_server.py  # 默认 0.0.0.0:9000，可用 ZIMAGE_PORT 修改
 
 2) AstrBot 中安装本插件，配置 `service_url`（默认 `http://127.0.0.1:9000/generate`）。
 
-3) 发送 `/zi gen a cat sitting on a chair` 试跑；若你的前端无法直接输入空格，可用 `~` 占位（会自动还原为空格）。
+3) 发送 `/zi gen a cat sitting on a chair` 试跑；若你的前端无法直接输入空格，可用固定占位符 `~`（会自动还原为空格）。
 
 ## 配置说明（`_conf_schema.json`）
 - `service_url`：生成服务完整地址，默认 `http://127.0.0.1:9000/generate`。
@@ -31,10 +31,9 @@ python webui_server.py  # 默认 0.0.0.0:9000，可用 ZIMAGE_PORT 修改
 - `timeout`：请求超时时间（秒）。
 - `max_concurrent_tasks`：最大并发生成数量。
 - `default_params.width/height/steps/guidance/seed/negative_prompt`：对应请求体参数，`seed` 为 `-1` 时表示随机。
-- `replace_space`：命令中若无法输入空格，可用此字符占位（默认 `~`），发送前会自动转回空格。
 
 ## 指令
-- `/zi gen [提示词]`：使用当前默认参数生成图片（直接支持空格；若无法输入空格可用 `~` 占位）。
+- `/zi gen [提示词]`：使用当前默认参数生成图片（直接支持空格；若无法输入空格固定用 `~` 占位）。
 - `/zi url [地址]`：修改生成服务地址。
 - `/zi size [宽] [高]`：设置默认宽高（1-2048）。
 - `/zi step [步数]`：设置默认步数（1-200）。

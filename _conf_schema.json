@@ -74,12 +74,5 @@
                 "hint": "为空时不传递负面提示词"
             }
         }
-    },
-
-    "replace_space": {
-        "type": "string",
-        "description": "用于替代提示词中空格的字符",
-        "default": "~",
-        "hint": "如命令参数无法直接包含空格，可先用该字符替代"
     }
 }

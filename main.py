@@ -45,6 +45,25 @@ class ZIGenerator(Star):
         replace_space = self.config.get("replace_space", "~")
         return prompt.replace(replace_space, " ")
 
+    @staticmethod
+    def _extract_prompt_from_message(event: AstrMessageEvent, prompt: str) -> str:
+        """从原始消息文本还原带空格的提示词"""
+        if prompt and prompt.strip():
+            return prompt
+
+        full = (event.message_str or "").strip()
+        if not full:
+            return prompt
+
+        tokens = full.split()
+        if tokens and tokens[0].lstrip("/") in ("zi",):
+            tokens = tokens[1:]
+        if tokens and tokens[0] == "gen":
+            tokens = tokens[1:]
+
+        fallback = " ".join(tokens).strip()
+        return fallback or prompt
+
     def _build_payload(self, prompt: str) -> dict[str, Any]:
         """构造发送到 ZIGen 接口的 payload"""
         params = self.config["default_params"]
@@ -140,6 +159,7 @@ class ZIGenerator(Star):
         """生成图片"""
         async with self.task_semaphore:
             try:
+                prompt = self._extract_prompt_from_message(event, prompt)
                 if self.config.get("verbose", True):
                     yield event.plain_result("🎨 正在调用 ZIGen 服务，请稍候...")
 

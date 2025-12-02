@@ -44,6 +44,7 @@ class ZIGenerator(Star):
         """直接返回提示词"""
         return prompt
 
+    @staticmethod
     def _extract_prompt_from_message(event: AstrMessageEvent) -> str:
         """从原始消息文本还原带空格的提示词"""
         full = (event.message_str or "").strip()

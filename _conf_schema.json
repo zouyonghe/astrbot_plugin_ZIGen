@@ -15,9 +15,9 @@
 
     "enable_group_message": {
         "type": "bool",
-        "description": "是否响应群聊消息",
+        "description": "是否允许群聊使用 /zi 指令",
         "default": true,
-        "hint": "关闭后仅响应私聊指令"
+        "hint": "关闭后会屏蔽群聊中的所有 /zi 指令"
     },
 
     "timeout": {

@@ -6,7 +6,6 @@ from typing import Any
 import aiohttp
 
 from astrbot.api.all import *
-from astrbot.api.event import filter
 
 
 TEMP_PATH = os.path.abspath("data/temp")
@@ -33,21 +32,6 @@ class ZIGenerator(Star):
             timeout = aiohttp.ClientTimeout(self.config.get("timeout", 120))
             self.session = aiohttp.ClientSession(timeout=timeout)
 
-    def _is_group_zi_command(self, event: AstrMessageEvent) -> bool:
-        """判断是否为群聊中的 /zi 指令"""
-        if getattr(event, "message_type", None) != filter.EventMessageType.GROUP_MESSAGE:
-            return False
-
-        text = (event.message_str or "").strip()
-        if not text:
-            return False
-
-        tokens = text.split()
-        if not tokens or tokens[0].lstrip("/") != "zi":
-            return False
-
-        return True
-
     @staticmethod
     def _strip_data_prefix(image_str: str) -> str:
         """移除 data:image/...;base64, 前缀"""
@@ -60,17 +44,6 @@ class ZIGenerator(Star):
         """直接返回提示词"""
         return prompt
 
-    @filter.event_message_type(filter.EventMessageType.GROUP_MESSAGE)
-    async def _on_group_message(self, event: AstrMessageEvent):
-        """群聊屏蔽开关控制所有 /zi 指令"""
-        if self.config.get("enable_group_message", True):
-            return
-        if not self._is_group_zi_command(event):
-            return
-        logger.debug("已关闭群聊 zi 指令响应，丢弃本次群聊请求")
-        event.stop_event()
-
-    @staticmethod
     def _extract_prompt_from_message(event: AstrMessageEvent) -> str:
         """从原始消息文本还原带空格的提示词"""
         full = (event.message_str or "").strip()
@@ -169,8 +142,7 @@ class ZIGenerator(Star):
             f"- Guidance: {params.get('guidance', 0)}\n"
             f"- 种子: {seed_text}\n"
             f"- 负面提示词: {negative_prompt}\n"
-            f"- 详略模式: {'开启' if self.config.get('verbose', True) else '关闭'}\n"
-            f"- 群聊指令: {'开启' if self.config.get('enable_group_message', True) else '关闭'}"
+            f"- 详略模式: {'开启' if self.config.get('verbose', True) else '关闭'}"
         )
 
     @command_group("zi")

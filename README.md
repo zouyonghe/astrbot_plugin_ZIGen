@@ -26,7 +26,6 @@ python webui_server.py  # 默认 0.0.0.0:9000，可用 ZIMAGE_PORT 修改
 ## 配置说明（`_conf_schema.json`）
 - `service_url`：生成服务完整地址，默认 `http://127.0.0.1:9000/generate`。
 - `verbose`：开启后在生成阶段输出提示。
-- `enable_group_message`：控制是否响应群聊指令，关闭后只在私聊生效。
 - `timeout`：请求超时时间（秒）。
 - `max_concurrent_tasks`：最大并发生成数量。
 - `default_params.width/height/steps/guidance/seed/negative_prompt`：对应请求体参数，`seed` 为 `-1` 时表示随机。

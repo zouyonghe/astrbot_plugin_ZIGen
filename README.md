@@ -4,6 +4,7 @@
 轻量生图插件，向 Z-Image WebUI 的 `/generate` 接口发送请求并将返回的图片发送给用户。默认请求体与 Z-Image WebUI 示例 curl 一致，可配置服务地址、分辨率、步数、guidance、随机种子和负面提示词。
 
 ### Z-Image WebUI（本地部署参考）
+- 项目仓库：https://github.com/zouyonghe/zimage-webui
 - 本地权重的轻量 Web UI，前端提供提示词/负面词、步数、引导强度、种子、分辨率预设（512/768/1024，16 像素步长限制）。
 - 一次点击可连续生成 1–10 张，默认随机种子；填写固定种子则按该值生成。
 - 每次生成自动写入 `outputs/`，文件名包含时间戳、分辨率和种子（无种子时标记 `rand`），接口返回的 `meta.saved_path` 也会给出保存路径。
@@ -15,7 +16,8 @@
 # 安装匹配 CUDA 的 torch/torchvision（示例 CUDA 12.1）
 # pip install torch==2.5.1+cu121 torchvision==0.20.1 -f https://download.pytorch.org/whl/torch_stable.html
 
-cd /path/to/zimage-webui
+git clone https://github.com/zouyonghe/zimage-webui.git
+cd zimage-webui
 pip install -r requirements.txt
 cd scripts && bash download_models.sh && cd ..
 python webui_server.py  # 默认 0.0.0.0:9000，可用 ZIMAGE_PORT 修改

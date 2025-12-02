@@ -6,6 +6,7 @@ from typing import Any
 import aiohttp
 
 from astrbot.api.all import *
+from astrbot.api.event import filter
 
 
 TEMP_PATH = os.path.abspath("data/temp")
@@ -43,6 +44,14 @@ class ZIGenerator(Star):
     def _trans_prompt(self, prompt: str) -> str:
         """直接返回提示词"""
         return prompt
+
+    @filter.event_message_type(filter.EventMessageType.GROUP_MESSAGE)
+    async def _on_group_message(self, event: AstrMessageEvent):
+        """在群聊中根据开关决定是否继续处理"""
+        if self.config.get("enable_group_message", True):
+            return
+        logger.debug("已关闭群聊响应，丢弃本次群聊消息")
+        event.stop_event()
 
     @staticmethod
     def _extract_prompt_from_message(event: AstrMessageEvent) -> str:
@@ -143,7 +152,8 @@ class ZIGenerator(Star):
             f"- Guidance: {params.get('guidance', 0)}\n"
             f"- 种子: {seed_text}\n"
             f"- 负面提示词: {negative_prompt}\n"
-            f"- 详略模式: {'开启' if self.config.get('verbose', True) else '关闭'}"
+            f"- 详略模式: {'开启' if self.config.get('verbose', True) else '关闭'}\n"
+            f"- 群聊响应: {'开启' if self.config.get('enable_group_message', True) else '关闭'}"
         )
 
     @command_group("zi")

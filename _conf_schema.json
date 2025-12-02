@@ -13,6 +13,13 @@
         "hint": "开启时会在生成阶段提示进度"
     },
 
+    "enable_group_message": {
+        "type": "bool",
+        "description": "是否响应群聊消息",
+        "default": true,
+        "hint": "关闭后仅响应私聊指令"
+    },
+
     "timeout": {
         "type": "int",
         "description": "请求超时时间（秒）",

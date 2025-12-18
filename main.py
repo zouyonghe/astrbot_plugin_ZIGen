@@ -275,6 +275,13 @@ class ZIGenerator(Star):
     @upscale.command("set")
     async def set_scale(self, event: AstrMessageEvent, scale: float):
         """设置默认放大倍数"""
+        if scale < 2.0 or scale > 5.0:
+            yield event.plain_result("⚠️ 放大倍数需在 2.0-5.0 范围内")
+            return
+
+        self.config["upscale_scale"] = scale
+        self.config.save_config()
+        yield event.plain_result(f"✅ 默认放大倍数已设置为: {scale}x")
 
 
     @llm_tool("zigen_generate_image")

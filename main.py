@@ -246,17 +246,15 @@ class ZIGenerator(Star):
         help_msg = [
             "🖼️ ZIGen 插件使用指南",
             "- `/zi gen [提示词]`：按照默认参数生成图片。",
-            "- `/zi url [地址]`：设置生成服务地址（例如 http://127.0.0.1:9000/generate）。",
-            "- `/zi size [宽] [高]`：设置默认生成尺寸。",
-            "- `/zi step [步数]`：设置默认步数。",
-            "- `/zi guidance [数值]`：设置 guidance 数值。",
+            "- `/zi size [宽] [高]`：设置默认生成尺寸（1-2048）。",
+            "- `/zi step [步数]`：设置默认步数（1-200）。",
+            "- `/zi guidance [数值]`：设置 guidance 数值（0-50）。",
             "- `/zi seed [种子]`：设置固定种子，-1 表示随机。",
-            "- `/zi upscale [图片] [倍数]`：对图片进行高分增强放大（需先启用）。",
-            "- `/zi upscale_scale [倍数]`：设置默认放大倍数（2.0-5.0）。",
-            "- `/zi upscale_toggle`：启用/禁用高分增强功能。",
+            "- `/zi upscale enable`：启用高分增强功能。",
+            "- `/zi upscale disable`：禁用高分增强功能。",
+            "- `/zi upscale set [倍数]`：设置默认放大倍数（2.0-5.0）。",
             "- `/zi conf`：查看当前配置。",
             "- `/zi help`：显示本帮助信息。",
-            "提示：如命令参数中无法直接输入空格，可用 `~` 代替，插件会自动还原为空格。",
         ]
         yield event.plain_result("\n".join(help_msg))
 

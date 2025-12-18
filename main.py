@@ -293,11 +293,11 @@ class ZIGenerator(Star):
         pass
         
     @upscale.command("enable")
-    async def toggle_upscale(self, event: AstrMessageEvent):
+    async def enable_upscale(self, event: AstrMessageEvent):
         """启用高分增强功能"""
 
     @upscale.command("disable")
-    async def toggle_upscale(self, event: AstrMessageEvent):
+    async def disable_upscale(self, event: AstrMessageEvent):
         """启用高分增强功能"""
 
     @upscale.command("set")

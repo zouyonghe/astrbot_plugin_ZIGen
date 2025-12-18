@@ -128,6 +128,36 @@ class ZIGenerator(Star):
             content = await resp.read()
             return [base64.b64encode(content).decode("utf-8")]
 
+    async def _upscale_images(self, images: list[str]) -> list[str]:
+        """调用高分增强接口对图片进行放大处理"""
+        await self.ensure_session()
+        base_url = self.config.get("service_url", "")
+        upscale_url = base_url.replace("/generate", "/upscale")
+        
+        scale = self.config.get("upscale_scale", 2.0)
+        upscaled_images = []
+        
+        for img_b64 in images:
+            payload = {
+                "image": img_b64,
+                "scale": scale
+            }
+            
+            async with self.session.post(upscale_url, json=payload) as resp:
+                if resp.status != 200:
+                    error = await resp.text()
+                    raise ConnectionError(f"高分增强接口返回异常 {resp.status}: {error}")
+                
+                content_type = resp.headers.get("Content-Type", "")
+                if "application/json" in content_type:
+                    data = await resp.json()
+                    upscaled_images.append(self._normalize_image(data))
+                else:
+                    content = await resp.read()
+                    upscaled_images.append(base64.b64encode(content).decode("utf-8"))
+        
+        return upscaled_images
+
     def _render_conf(self) -> str:
         params = self.config.get("default_params", {})
         negative_prompt = params.get("negative_prompt", "").strip() or "未设置"

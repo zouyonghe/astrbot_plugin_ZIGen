@@ -202,6 +202,12 @@ class ZIGenerator(Star):
                     yield event.plain_result("🎨 正在调用 ZIGen 服务，请稍候...")
 
                 images = await self._request_images(self._build_payload(prompt))
+                
+                if self.config.get("upscale_enabled", False):
+                    if self.config.get("verbose", True):
+                        yield event.plain_result("🔍 正在进行高分增强处理...")
+                    images = await self._upscale_images(images)
+                
                 chain = [Image.fromBase64(img) for img in images]
                 yield event.chain_result(chain)
 
@@ -295,6 +301,9 @@ class ZIGenerator(Star):
     @upscale.command("enable")
     async def enable_upscale(self, event: AstrMessageEvent):
         """启用高分增强功能"""
+        self.config["upscale_enabled"] = True
+        self.config.save_config()
+        yield event.plain_result("✅ 高分增强功能已启用")
 
     @upscale.command("disable")
     async def disable_upscale(self, event: AstrMessageEvent):

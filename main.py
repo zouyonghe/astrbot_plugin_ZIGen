@@ -151,7 +151,10 @@ class ZIGenerator(Star):
                 content_type = resp.headers.get("Content-Type", "")
                 if "application/json" in content_type:
                     data = await resp.json()
-                    upscaled_images.append(self._normalize_image(data))
+                    if "image" in data:
+                        upscaled_images.append(self._normalize_image(data["image"]))
+                    else:
+                        upscaled_images.append(self._normalize_image(data))
                 else:
                     content = await resp.read()
                     upscaled_images.append(base64.b64encode(content).decode("utf-8"))

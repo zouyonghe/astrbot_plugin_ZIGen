@@ -11,7 +11,7 @@ from astrbot.api.all import *
 TEMP_PATH = os.path.abspath("data/temp")
 
 
-@register("ZIGen", "buding(AstrBot)", "调用自定义生成接口返回图片", "1.0.2")
+@register("ZIGen", "buding(AstrBot)", "调用自定义生成接口返回图片", "1.0.3")
 class ZIGenerator(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)

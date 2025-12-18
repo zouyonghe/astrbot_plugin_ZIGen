@@ -1,6 +1,6 @@
 name: astrbot_plugin_ZIGen
 desc: 通过调用自定义 /generate 接口生成图片并发送给用户的插件
 help: 输入 /zi help 查看使用说明
-version: v1.0.2
+version: v1.0.3
 author: buding(AstrBot)
 repo: https://github.com/zouyonghe/astrbot_plugin_ZIGen

@@ -276,6 +276,16 @@ class ZIGenerator(Star):
         """查看当前配置"""
         yield event.plain_result(f"⚙️ 当前配置:\n{self._render_conf()}")
 
+    @zi.command("verbose")
+    async def toggle_verbose(self, event: AstrMessageEvent):
+        """切换生成进度提示的显示状态"""
+        current = self.config.get("verbose", True)
+        self.config["verbose"] = not current
+        self.config.save_config()
+        
+        new_state = "开启" if not current else "关闭"
+        yield event.plain_result(f"✅ 详略模式已{new_state}")
+
     @zi.command("help")
     async def show_help(self, event: AstrMessageEvent):
         """显示使用说明"""
@@ -286,6 +296,7 @@ class ZIGenerator(Star):
             "- `/zi step [步数]`：设置默认步数（1-200）。",
             "- `/zi guidance [数值]`：设置 guidance 数值（0-50）。",
             "- `/zi seed [种子]`：设置固定种子，-1 表示随机。",
+            "- `/zi verbose [on/off]`：控制是否显示生成进度提示。",
             "- `/zi upscale enable`：启用高分增强功能。",
             "- `/zi upscale disable`：禁用高分增强功能。",
             "- `/zi upscale set [倍数]`：设置默认放大倍数（2.0-5.0）。",

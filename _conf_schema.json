@@ -29,6 +29,22 @@
         "max": 50
     },
 
+    "upscale_enabled": {
+        "type": "bool",
+        "description": "是否启用高分增强功能",
+        "default": false,
+        "hint": "开启后可使用 /zi upscale 命令对图片进行放大"
+    },
+
+    "upscale_scale": {
+        "type": "float",
+        "description": "默认放大倍数",
+        "default": 2.0,
+        "min": 2.0,
+        "max": 5.0,
+        "hint": "支持 2.0 到 5.0 倍放大"
+    },
+
     "default_params": {
         "type": "object",
         "description": "默认生成参数",

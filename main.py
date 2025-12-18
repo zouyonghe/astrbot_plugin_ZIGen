@@ -321,7 +321,10 @@ class ZIGenerator(Star):
 
     @upscale.command("disable")
     async def disable_upscale(self, event: AstrMessageEvent):
-        """启用高分增强功能"""
+        """禁用高分增强功能"""
+        self.config["upscale_enabled"] = False
+        self.config.save_config()
+        yield event.plain_result("✅ 高分增强功能已禁用")
 
     @upscale.command("set")
     async def set_scale(self, event: AstrMessageEvent, scale: float):

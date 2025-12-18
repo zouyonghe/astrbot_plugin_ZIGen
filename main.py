@@ -182,17 +182,6 @@ class ZIGenerator(Star):
                 logger.error(f"ZIGen 生成失败: {e}")
                 yield event.plain_result("❌ 生成失败，请检查服务地址、参数或日志")
 
-    @zi.command("url")
-    async def set_service_url(self, event: AstrMessageEvent, service_url: str):
-        """设置服务地址"""
-        if not service_url.startswith(("http://", "https://")):
-            yield event.plain_result("⚠️ 地址需包含 http:// 或 https:// 前缀")
-            return
-
-        self.config["service_url"] = service_url
-        self.config.save_config()
-        yield event.plain_result(f"✅ 服务地址已更新为: {service_url}")
-
     @zi.command("size")
     async def set_size(self, event: AstrMessageEvent, width: int, height: int):
         """设置生成图片的尺寸"""
@@ -271,89 +260,22 @@ class ZIGenerator(Star):
         ]
         yield event.plain_result("\n".join(help_msg))
 
-    @zi.command("upscale")
-    async def upscale_image(self, event: AstrMessageEvent, scale: float = None):
-        """对图片进行高分增强放大"""
-        if not self.config.get("upscale_enabled", False):
-            yield event.plain_result("⚠️ 高分增强功能未启用，请使用 /zi upscale_toggle 启用")
-            return
-
-        image_segments = [seg for seg in event.message_obj if seg.type == "image"]
-        if not image_segments:
-            yield event.plain_result("⚠️ 请在命令中包含要放大的图片")
-            return
-
-        if scale is None:
-            scale = self.config.get("upscale_scale", 2.0)
+    @zi.group("upscale")
+    async def upscale(self):
+        pass
         
-        if scale < 2.0 or scale > 5.0:
-            yield event.plain_result("⚠️ 放大倍数需在 2.0-5.0 范围内")
-            return
-
-        async with self.task_semaphore:
-            try:
-                if self.config.get("verbose", True):
-                    yield event.plain_result(f"🔍 正在进行 {scale}x 高分增强，请稍候...")
-
-                await self.ensure_session()
-                upscale_url = self.config["service_url"].replace("/generate", "/upscale")
-
-                image_seg = image_segments[0]
-                image_data = image_seg.data.get("url") or image_seg.data.get("file")
-                
-                if not image_data:
-                    yield event.plain_result("⚠️ 无法获取图片数据")
-                    return
-
-                payload = {
-                    "image": image_data,
-                    "scale": scale,
-                    "return_image": True
-                }
-
-                async with self.session.post(upscale_url, json=payload) as resp:
-                    if resp.status != 200:
-                        error = await resp.text()
-                        raise ConnectionError(f"接口返回异常 {resp.status}: {error}")
-
-                    data = await resp.json()
-                    
-                    if "image" not in data:
-                        raise ValueError("响应中缺少 image 字段")
-
-                    upscaled_image = self._strip_data_prefix(data["image"])
-                    yield event.chain_result([Image.fromBase64(upscaled_image)])
-
-                    if self.config.get("verbose", True):
-                        meta = data.get("meta", {})
-                        size_info = f"{meta.get('source_width', '?')}x{meta.get('source_height', '?')} → {meta.get('width', '?')}x{meta.get('height', '?')}"
-                        yield event.plain_result(f"✅ 高分增强完成 ({size_info})")
-
-            except Exception as e:
-                logger.error(f"ZIGen 高分增强失败: {e}")
-                yield event.plain_result("❌ 高分增强失败，请检查服务地址、参数或日志")
-
-    @zi.command("upscale_scale")
-    async def set_upscale_scale(self, event: AstrMessageEvent, scale: float):
-        """设置默认放大倍数"""
-        if scale < 2.0 or scale > 5.0:
-            yield event.plain_result("⚠️ 放大倍数需在 2.0-5.0 范围内")
-            return
-
-        self.config["upscale_scale"] = scale
-        self.config.save_config()
-        yield event.plain_result(f"✅ 默认放大倍数已设置为: {scale}x")
-
-    @zi.command("upscale_toggle")
+    @upscale.command("enable")
     async def toggle_upscale(self, event: AstrMessageEvent):
-        """启用/禁用高分增强功能"""
-        current = self.config.get("upscale_enabled", False)
-        new_state = not current
-        self.config["upscale_enabled"] = new_state
-        self.config.save_config()
-        
-        status = "已启用" if new_state else "已禁用"
-        yield event.plain_result(f"✅ 高分增强功能{status}")
+        """启用高分增强功能"""
+
+    @upscale.command("disable")
+    async def toggle_upscale(self, event: AstrMessageEvent):
+        """启用高分增强功能"""
+
+    @upscale.command("set")
+    async def set_scale(self, event: AstrMessageEvent, scale: float):
+        """设置默认放大倍数"""
+
 
     @llm_tool("zigen_generate_image")
     async def generate_image_tool(self, event: AstrMessageEvent, prompt: str):
